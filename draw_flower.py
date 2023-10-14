@@ -38,7 +38,7 @@ for i in range(NUMBER_OF_PETALS):
 
         # Quay theo chiều ngược lại để vẽ một nửa gân cánh hoa còn lại
         turtle.left(90)
-        turtle.circle(150 - j * 6, 90)
+        turtle.circle(radius, 90)
 
         # Quay sang phải góc 180 độ để chuẩn bị vẽ cánh hoa kế tiếp
         turtle.right(180)
