@@ -1,4 +1,23 @@
 # TÌM ĐỘ DÀI CHUỖI CON CHUNG DÀI NHẤT - THI HSG LỚP 11 CẤP TRƯỜNG - THPT NGỌC TẢO
+
+# Ý TƯỞNG: ÁP DỤNG QUY HOẠCH ĐỘNG
+"""
+Bước 1: Xác định bài toán con:
+- Lặp qua từng ký tự của s1 và s2 để so sánh 
+- Xác định độ dài chuỗi con chung dài nhất tại mỗi vị trí
+
+Bước 2: Xác định bài toán cơ sở:
+- Nếu ký tự tại vị trí i của s1 và ký tự tại vị trí j của s2 giống nhau
+-> Cập nhật độ dài của chuỗi con chung dài nhất tại vị trí i và j
+
+Bước 3: Xác định đáp án bài toán:
+- Trả về chuỗi con chung dài nhất
+
+Bước 4: Xác định công thức truy hồi:
+- L[i][j] = L[i - 1][j - 1] + 1
+- Nghĩa là: Cập nhật độ dài chuỗi con chung tại vị trí [i][j] dựa trên các độ dài chuỗi con chung từ các vị trí trước đó [i-1][j-1]
+"""
+
 # Giả dụ fix cứng 2 chuỗi đầu vào s1 và s2 để kiểm tra kết quả cho nhanh
 s1 = 'ACGTACGT'
 s2 = 'TGACGTAC'
@@ -9,18 +28,19 @@ longest = 0
 # Vị trí kết thúc chuỗi con chung dài nhất trong chuỗi s1
 end = 0
 
-# Tạo mảng 2 chiều (hình dung là 1 cái bảng có các hàng các cột cho dễ)
-# Dùng để lưu trữ độ dài của chuỗi con chung dài nhất tại mỗi vị trí của các chuỗi
-# Mặc định ban đầu khởi tạo tất cả các phần tử trong bảng có giá trị là 0
-# Bảng này có kích thước số hàng x số cột, tức là rows x columns
-# Hoặc (len(s1) + 1) x (len(s2) + 1)
-# Lý do phải cộng thêm 1 vào độ dài 2 chuỗi là vì tý nữa ở phần công thức truy hồi
-# sẽ phải tính L[i][j] = L[i - 1][j - 1] + 1
-# Nên những trường hợp như L[1][1] = L[0][0] + 1
-# thì phải biết được L[0][0] có giá trị là mấy (thực ra L[0][0] sẽ luôn là 0 thôi)
-# Thực ra có 2 cách viết ngắn gọn hơn cho đoạn code này:
-# - Cách 1: L = [[0 for i in range(columns)] for j in range(rows)]
-# - Cách 2: L = [[0] * columns] * rows
+"""
+Tạo mảng 2 chiều (hình dung là 1 cái bảng có các hàng các cột cho dễ)
+Dùng để lưu trữ độ dài của chuỗi con chung dài nhất tại mỗi vị trí của các chuỗi
+Mặc định ban đầu khởi tạo tất cả các phần tử trong bảng có giá trị là 0
+Bảng này có kích thước (số hàng x số cột), tức là (rows x columns) hoặc (len(s1) + 1) x (len(s2) + 1)
+Lý do phải cộng thêm 1 vào độ dài 2 chuỗi là vì tý nữa ở phần công thức truy hồi
+sẽ phải tính L[i][j] = L[i - 1][j - 1] + 1
+Nên những trường hợp như L[1][1] = L[0][0] + 1
+thì phải biết được L[0][0] có giá trị là mấy (thực ra L[0][0] sẽ luôn là 0 thôi)
+Thực ra có 2 cách viết ngắn gọn hơn cho đoạn code này:
+- Cách 1: L = [[0 for i in range(columns)] for j in range(rows)]
+- Cách 2: L = [[0] * columns] * rows
+"""
 L = []
 rows, columns = len(s1) + 1, len(s2) + 1
 for i in range(rows):
