@@ -39,7 +39,7 @@
         popup.style.color = '#fff';
         popup.style.border = '1px solid #ccc';
         popup.style.borderRadius = '8px';
-        popup.style.boxShadow = 'rgba(0, 0, 0, 0.35) 0px 5px 15px';
+        popup.style.boxShadow = 'rgba(0, 0, 0, 0.35) 20px 13px 50px 20px';
         popup.style.padding = '20px';
         popup.style.zIndex = '10000';
         popup.style.width = '600px';
