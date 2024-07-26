@@ -11,150 +11,199 @@
 // ==/UserScript==
 
 (function() {
-    'use strict';
+  'use strict';
 
-    GM_addStyle(`
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
-    `);
+  GM_addStyle(`
+      @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
-    let button = document.createElement('button');
-    button.innerHTML = '<i class="fas fa-download" style="margin-right: 8px;"></i>Phương Hòn Đá tải file MP3 tại đây điii!!!';
-    button.style.position = 'fixed';
-    button.style.top = '10px';
-    button.style.right = '10px';
-    button.style.zIndex = '9999';
-    button.style.width = '400px';
-    button.style.height = '50px';
-    button.style.backgroundColor = 'green';
-    button.style.color = '#fff';
-    button.style.fontWeight = 'bold';
-    document.body.appendChild(button);
+      .tms-button-cta {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        padding: 1.2em 1rem;
+        cursor: pointer;
+        gap: 0.4rem;
+        font-weight: bold;
+        border-radius: 30px;
+        text-shadow: 2px 2px 3px rgb(136 0 136 / 50%);
+        background: linear-gradient(15deg, #880088, #aa2068, #cc3f47, #de6f3d, #f09f33, #de6f3d, #cc3f47, #aa2068, #880088) no-repeat;
+        background-size: 300%;
+        color: #fff;
+        border: none;
+        background-position: left center;
+        box-shadow: 0 30px 10px -20px rgba(0,0,0,.2);
+        transition: background .3s ease;
+      }
 
-    button.addEventListener('click', function() {
-        openPopup();
-    });
+      .tms-button-cta:hover {
+        background-size: 320%;
+        background-position: right center;
+      }
 
-    function openPopup() {
-        let popup = document.createElement('div');
-        popup.style.position = 'fixed';
-        popup.style.top = '40%';
-        popup.style.left = '50%';
-        popup.style.transform = 'translate(-50%, -50%)';
-        popup.style.backgroundColor = '#1b1b32';
-        popup.style.color = '#fff';
-        popup.style.border = '1px solid #ccc';
-        popup.style.borderRadius = '8px';
-        popup.style.boxShadow = 'rgba(0, 0, 0, 0.35) 20px 13px 50px 20px';
-        popup.style.padding = '20px';
-        popup.style.zIndex = '10000';
-        popup.style.width = '600px';
-        popup.style.height = '400px';
-        popup.style.overflowY = 'auto';
-        popup.style.cursor = "grab";
+      .tms-popup {
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #1b1b32;
+        color: #fff;
+        border-radius: 8px;
+        border: none;
+        box-shadow: #ff596ccc 2px 1px 20px 11px;
+        padding: 20px;
+        z-index: 10000;
+        width: 600px;
+        height: 400px;
+        overflow-y: auto;
+        cursor: grab;
+      }
 
-        const nodeList = document.querySelectorAll("audio.wp-audio-shortcode a");
-        const listItems = [...nodeList];
+      .tms-popup .tms-text-danger {
+        margin-top: 40px;
+        color: #e52b50;
+      }
 
-        if (listItems.length === 0) {
-            let h1Item = document.createElement('h1');
-            h1Item.innerHTML = 'Không có file nghe nào trên trang này cả!!!';
-            h1Item.style.marginTop = '40px';
-            h1Item.style.color = '#e52b50';
-            popup.appendChild(h1Item);
-        }
-        else {
+      .tms-popup ol {
+        margin-top: 40px;
+      }
 
-            let orderedList = document.createElement('ol');
-            orderedList.style.marginTop = '40px';
-            let items = listItems.map((item) => {return {name: item.href.substring(item.href.lastIndexOf('/') + 1), url: item.href}});
+      .tms-popup ol li {
+        margin-bottom: 20px;
+      }
 
-            items.forEach(function(item) {
-                let listItem = document.createElement('li');
-                listItem.style.marginBottom = '10px';
+      .tms-popup ol li span {
+        margin-right: 20px;
+      }
 
-                let itemName = document.createElement('span');
-                itemName.innerHTML = item.name;
-                itemName.style.marginRight = '10px';
+      .tms-popup .tms-download-button {
+        background-color: transparent;
+        color: #fff;
+        border: 1px solid #ccc;
+      }
 
-                let downloadButton = document.createElement('button');
-                downloadButton.innerHTML = '<i class="fas fa-download" style="margin-right: 8px;"></i>Download';
-                downloadButton.style.backgroundColor = '#1b1b32';
-                downloadButton.style.color = '#fff';
-                downloadButton.style.border = '1px solid #ccc';
-                downloadButton.addEventListener('click', function() {
-                    downloadMP3(item.url, item.name + '.mp3');
-                });
+      .tms-popup .tms-download-button:hover {
+        opacity: 0.8;
+      }
 
-                listItem.appendChild(itemName);
-                listItem.appendChild(downloadButton);
-                orderedList.appendChild(listItem);
-            });
+      .tms-popup .tms-close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #fff;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        width: 32px;
+        height: 32px;
+      }
+  `);
 
-            popup.appendChild(orderedList);
-        }
+  let button = document.createElement('button');
+  button.className = 'tms-button-cta';
+  button.innerHTML = '<i class="fas fa-download" style="margin-right: 8px;"></i>Phương Hòn Đá tải file MP3 tại đây điii!!!';
 
-        document.body.appendChild(popup);
+  document.body.appendChild(button);
 
-        let closeButton = document.createElement('button');
-        closeButton.innerHTML = '<i class="fa-solid fa-xmark fa-xl" title="Close"></i>';
-        closeButton.style.position = 'absolute';
-        closeButton.style.top = '10px';
-        closeButton.style.right = '10px';
-        closeButton.style.backgroundColor = '#1b1b32';
-        closeButton.style.color = '#fff';
-        closeButton.style.border = '1px solid #ccc';
-        closeButton.style.width = '32px';
-        closeButton.style.height = '32px';
-        closeButton.addEventListener('click', function() {
-            document.body.removeChild(popup);
-        });
+  button.addEventListener('click', function() {
+      openPopup();
+  });
 
-        popup.appendChild(closeButton);
+  function openPopup() {
+      let popup = document.createElement('div');
+      popup.className = "tms-popup";
 
-        dragElement(popup);
-    }
+      const nodeList = document.querySelectorAll("audio.wp-audio-shortcode a");
+      const listItems = [...nodeList];
 
-    function dragElement(element) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      if (listItems.length === 0) {
+          let h1Item = document.createElement('h1');
+          h1Item.innerHTML = 'Không có file nghe nào trên trang này cả!!!';
+          h1Item.className = 'text-danger';
+          popup.appendChild(h1Item);
+      }
+      else {
 
-        element.onmousedown = dragMouseDown;
+          let orderedList = document.createElement('ol');
+          let items = listItems.map((item) => {return {name: item.href.substring(item.href.lastIndexOf('/') + 1), url: item.href}});
 
-        function dragMouseDown(e) {
-            e = e || window.event;
-            e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-        }
+          items.forEach(function(item) {
+              let listItem = document.createElement('li');
 
-        function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            element.style.top = (element.offsetTop - pos2) + "px";
-            element.style.left = (element.offsetLeft - pos1) + "px";
-        }
+              let itemName = document.createElement('span');
+              itemName.innerHTML = item.name;
 
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-    }
+              let downloadButton = document.createElement('button');
+              downloadButton.className = 'tms-download-button';
+              downloadButton.innerHTML = '<i class="fas fa-download" style="margin-right: 8px;"></i>Download';
+              downloadButton.addEventListener('click', function() {
+                  downloadMP3(item.url, item.name + '.mp3');
+              });
 
-    function downloadMP3(url, filename) {
-        GM_download({
-            url: url,
-            name: filename,
-            onload: function() {
-                console.log('Download complete: ' + filename);
-            },
-            onerror: function(error) {
-                alert('Download failed: ' + filename + '\nError: ' + error.error + '\nDetails: ' + error.details);
-            }
-        });
-    }
+              listItem.appendChild(itemName);
+              listItem.appendChild(downloadButton);
+              orderedList.appendChild(listItem);
+          });
+
+          popup.appendChild(orderedList);
+      }
+
+      document.body.appendChild(popup);
+
+      let closeButton = document.createElement('button');
+      closeButton.className = "tms-close-button"
+      closeButton.innerHTML = '<i class="fa-solid fa-xmark fa-xl" title="Close"></i>';
+
+      closeButton.addEventListener('click', function() {
+          document.body.removeChild(popup);
+      });
+
+      popup.appendChild(closeButton);
+
+      dragElement(popup);
+  }
+
+  function dragElement(element) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+      element.onmousedown = dragMouseDown;
+
+      function dragMouseDown(e) {
+          e = e || window.event;
+          e.preventDefault();
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          document.onmouseup = closeDragElement;
+          document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          element.style.top = (element.offsetTop - pos2) + "px";
+          element.style.left = (element.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+          document.onmouseup = null;
+          document.onmousemove = null;
+      }
+  }
+
+  function downloadMP3(url, filename) {
+      GM_download({
+          url: url,
+          name: filename,
+          onload: function() {
+              console.log('Download complete: ' + filename);
+          },
+          onerror: function(error) {
+              alert('Download failed: ' + filename + '\nError: ' + error.error + '\nDetails: ' + error.details);
+          }
+      });
+  }
 })();
